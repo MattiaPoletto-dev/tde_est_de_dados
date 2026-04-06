@@ -1,0 +1,102 @@
+{
+    "usuarios": [
+        {
+            "id": 1,
+            "login": "admin",
+            "senha": "123",
+            "role": "admin",
+            "cpf": null,
+            "nome": null
+        },
+        {
+            "id": 2,
+            "login": "funcionario_teste",
+            "senha": "123",
+            "role": "func",
+            "cpf": 11122233344,
+            "nome": "funcionario1"
+        }
+    ],
+    "produtos": [
+        {
+            "id": 1,
+            "nome": "maçã",
+            "preco": 1.5
+        },
+        {
+            "id": 2,
+            "nome": "bananas (por kg)",
+            "preco": 5.5
+        },
+        {
+            "id": 3,
+            "nome": "leite integral (1L)",
+            "preco": 4.8
+        },
+        {
+            "id": 4,
+            "nome": "pão de forma",
+            "preco": 7.3
+        },
+        {
+            "id": 5,
+            "nome": "café torrado (500g)",
+            "preco": 18.9
+        },
+        {
+            "id": 6,
+            "nome": "arroz agulhinha (5kg)",
+            "preco": 24.5
+        },
+        {
+            "id": 7,
+            "nome": "feijão carioca (1kg)",
+            "preco": 8.2
+        },
+        {
+            "id": 8,
+            "nome": "açúcar refinado (1kg)",
+            "preco": 4.15
+        },
+        {
+            "id": 9,
+            "nome": "óleo de soja (900ml)",
+            "preco": 6.9
+        },
+        {
+            "id": 10,
+            "nome": "macarrão espaguete",
+            "preco": 3.4
+        },
+        {
+            "id": 11,
+            "nome": "manteiga com sal (200g)",
+            "preco": 12.6
+        },
+        {
+            "id": 12,
+            "nome": "queijo mussarela (fatiado)",
+            "preco": 15.0
+        },
+        {
+            "id": 13,
+            "nome": "detergente líquido",
+            "preco": 2.2
+        },
+        {
+            "id": 14,
+            "nome": "papel higiênico (12 unidades)",
+            "preco": 16.8
+        },
+        {
+            "id": 15,
+            "nome": "sabão em pó (1kg)",
+            "preco": 14.5
+        },
+        {
+            "id": 16,
+            "nome": "uvas",
+            "preco": 6.0
+        }
+    ]
+}

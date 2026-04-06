@@ -1,27 +1,45 @@
 from menu_admin.crud_funcionarios import criar_funcionario, ver_funcionario, atualizar_funcionario, remover_funcionario
-from menu_admin.crud_produtos import criar_produto, ver_produto, atualizar_produto, remover_produto
-from menu_funcionario.area_funcionario import chamar_proximo_da_fila, ver_historico_de_compras, ver_produtos, ver_produto_especifico
-from classes.classes import Usuario, Funcionario, Produto
-import json, time
+from menu_admin.crud_produtos import criar_produto, atualizar_produto, remover_produto
+from menu_funcionario.area_funcionario import ver_fila, chamar_proximo_da_fila, ver_historico_de_compras, cancelar_ultima_compra,ver_produtos, ver_produto_especifico
+from json_sistema.funcoes_json import ler_json
+from classes.classes import Usuario, Produto
+import time, getpass, random
+from os import system as sys
 
 
 # Funções menus
 
 def menu_login(lista_usuarios): # Retorna o objeto se condizer com o login e senha, retorna None se não condizer
+    login_input = input("Usuário: ").strip()
+    
+    senha_input = getpass.getpass("Senha: ")
+
+    for usuario in lista_usuarios:
+        if usuario.login == login_input and usuario.senha == senha_input:
+            print(f"\nBem-vindo, {usuario.login}")
+            print("-" * 35)
+            input("Continuar...")
+            return usuario
+    
+    print("\nUsuário ou senha incorretos")
+    print("-" * 35)
+    input("Continuar...")
     return None
 
 
 # ----------------------------------------------------
 def menu_admin():
     while True:
-        print("Painel administrador\n")
+        sys("cls")
+        print("-" * 35)
+        print(f"{'Painel administrador': ^35}\n")
         print("1. Gestão de funcionários")
         print("2. Gestão de produtos")
         print("0. Sair")
         escolha = input("Escolha: ")
 
         if escolha == "0":
-            print("Saindo...")
+            print("\nSaindo...")
             time.sleep(2)
             break
         elif escolha == "1":
@@ -29,111 +47,187 @@ def menu_admin():
         elif escolha == "2":
             gestao_produtos()
         else:
-            print("ERRO! Escolha inválida")
+            print("\nERRO! Escolha inválida")
+            print("-" * 35)
+            input("Continuar...")
 
 def gestao_funcionarios():
     while True:
-        print("Gestão de funcionários\n")
+        sys("cls")
+        print("-" * 35)
+        print(f"{'Gestão de funcionários': ^35}\n")
         print("1. Criar funcionário")
-        print("2. Ver funcionário")
+        print("2. Ver funcionários")
         print("3. Atualizar dados do funcionário")
         print("4. Remover funcionário")
-        print("0. Sair")
+        print("0. Voltar")
         escolha = input("Escolha: ")
         if escolha == "0":
             break
         elif escolha == "1":
-            criar_funcionario()
+            criar_funcionario(lista_usuarios)
         elif escolha == "2":
-            ver_funcionario()
+            ver_funcionario(lista_usuarios)
         elif escolha == "3":
-            atualizar_funcionario()
+            atualizar_funcionario(lista_usuarios)
         elif escolha == "4":
-            remover_funcionario()
+            remover_funcionario(lista_usuarios)
         else:
-            print("ERRO! Escolha inválida")
+            print("\nERRO! Escolha inválida")
+            print("-" * 35)
+            input("Continuar...")
 
 def gestao_produtos():
     while True:
-        print("Gestão de produtos\n")
+        sys("cls")
+        print("-" * 35)
+        print(f"{'Gestão de produtos': ^35}\n")
         print("1. Criar produto")
-        print("2. Ver produto")
+        print("2. Ver produtos")
         print("3. Atualizar dados do produto")
         print("4. Remover produto")
-        print("0. Sair")
+        print("0. Voltar")
         escolha = input("Escolha: ")
         if escolha == "0":
             break
         elif escolha == "1":
-            criar_produto()
+            criar_produto(lista_produtos)
         elif escolha == "2":
-            ver_produto()
+            ver_produtos(lista_produtos)
         elif escolha == "3":
-            atualizar_produto()
+            atualizar_produto(lista_produtos)
         elif escolha == "4":
-            remover_produto()
+            remover_produto(lista_produtos)
         else:
-            print("ERRO! Escolha inválida")
+            print("\nERRO! Escolha inválida")
+            print("-" * 35)
+            input("Continuar...")
 
 
 # ----------------------------------------------------
 def menu_funcionario():
     while True:
-        print("Painel funcionário\n")
-        print("1. Chamar o próximo da fila")
-        print("2. Ver histórico de compras")
-        print("3. Ver produtos")
-        print("4. Procurar produto específico")
+        sys("cls")
+        print("-" * 35)
+
+        if not fila:
+            while True:
+                cliente_entrando_na_fila(fila,lista_produtos)
+                if len(fila) >= 7:
+                    break
+
+        print(f"{'Painel funcionário': ^35}\n")
+        print("1. Ver fila")
+        print("2. Chamar o próximo da fila")
+        print("3. Ver histórico de compras")
+        print("4. Cancelar última compra")
+        print("5. Ver produtos")
+        print("6. Procurar produto específico")
         print("0. Sair")
         escolha = input("Escolha: ")
 
         if escolha == "0":
-            print("Saindo...")
+            print("\nSaindo...")
             time.sleep(2)
             break
         elif escolha == "1":
-            chamar_proximo_da_fila()
+            ver_fila(fila)
         elif escolha == "2":
-            ver_historico_de_compras()
+            chamar_proximo_da_fila(fila, historico_de_compras)
+            cliente_entrando_na_fila(fila,lista_produtos)
         elif escolha == "3":
-            ver_produtos()
+            ver_historico_de_compras(historico_de_compras)
         elif escolha == "4":
-            ver_produto_especifico()
+            cancelar_ultima_compra(historico_de_compras)
+        elif escolha == "5":
+            ver_produtos(lista_produtos)
+        elif escolha == "6":
+            indice = ver_produto_especifico(lista_produtos)
+            if indice == -1:
+                print("\nProduto não encontrado!")
+                print("*" * 35)
+                input("Continuar...")
+            elif indice == -2:
+                pass
+            else:
+                print("-" * 25)
+                print(f"ID   : {lista_produtos[indice].id}")
+                print(f"Nome : {lista_produtos[indice].nome}")
+                print(f"Preço: R${lista_produtos[indice].preco:.2f}\n")
+                print("*" * 35)
+                input("Continuar...")
         else:
-            print("ERRO! Escolha inválida")
+            print("\nERRO! Escolha inválida")
+            print("-" * 35)
+            input("Continuar...")
 
+def cliente_entrando_na_fila(fila,lista_produtos):
+    valor = random.randint(1,100)
+    if valor > 75:
+        prioridade = random.randint(0,1)
+        compras = []
+        indices_produtos = []
+        for i in range(len(lista_produtos)):
+            indice = random.randint(0,len(lista_produtos)-1)
+            if indice not in indices_produtos:
+                indices_produtos.append(indice)
+
+        for indice in indices_produtos:
+            compra = (lista_produtos[indice], random.randint(1,5))
+            compras.append(compra)
+        
+        cliente = {
+            "prioridade": prioridade,
+            "compras"   : compras
+        }
+
+        fila.append(cliente)
+        ordenar_lista_por_prioridade(fila)
+
+def ordenar_lista_por_prioridade(fila):
+    for i in range(1, len(fila)):
+        
+        for j in range(i, 0, -1):
+            if fila[j]["prioridade"] < fila[j-1]["prioridade"]:
+                obj = fila[j]
+                fila[j] = fila[j-1]
+                fila[j-1] = obj
+            else:
+                break
+
+    return fila
 
 
 # Dados do json para o programa
-with open("json/dados.json", "r", encoding='utf-8') as arquivo:
-    dados = json.load(arquivo)
+dados = ler_json("json_sistema/dados.json")
 
 
 lista_usuarios = []
 for usuario in dados['usuarios']:
-    lista_usuarios.append(Usuario(usuario['login'], usuario['senha'], usuario['role']))
+    lista_usuarios.append(Usuario(usuario['login'], usuario['senha'], usuario['role'], usuario['cpf'], usuario['nome']))
 
-lista_funcionarios = []
-for funcionario in dados['usuarios']:
-    if funcionario['role'] == "func":
-        lista_funcionarios.append(Funcionario(funcionario['cpf'], funcionario['nome']))
 
 lista_produtos = []
 for produto in dados['produtos']:
-    lista_produtos.append(Produto(produto['id'], produto['nome'], produto['preco']))
+    lista_produtos.append(Produto(produto['nome'], produto['preco']))
 
+fila = []
 
+historico_de_compras = []
 
 # Programa rodando
 while True:
+    sys("cls")
+    print("-" * 35)
+    print(f"{'Login sistema': ^35}\n")
     usuario_autenticado = menu_login(lista_usuarios)
-
-    if usuario_autenticado is None:
-        print("Usuário ou senha incorretos")
-    else:
+        
+    if usuario_autenticado is not None:
         if usuario_autenticado.role == "admin":
             menu_admin()
-        elif usuario_autenticado.role == "funcionario":
+        elif usuario_autenticado.role == "func":
             menu_funcionario()
         else:
             print("ERRO na role deste usuário, favor contatar o suporte!")
+            print("-" * 35)
+            input("Continuar...")
