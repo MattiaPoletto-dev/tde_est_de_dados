@@ -7,14 +7,6 @@
             "role": "admin",
             "cpf": null,
             "nome": null
-        },
-        {
-            "id": 2,
-            "login": "funcionario_teste",
-            "senha": "123",
-            "role": "func",
-            "cpf": 11122233344,
-            "nome": "funcionario1"
         }
     ],
     "produtos": [
