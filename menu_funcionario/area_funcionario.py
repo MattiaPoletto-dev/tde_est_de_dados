@@ -36,7 +36,6 @@ def chamar_proximo_da_fila(fila, historico):
 
     return proximo
 
-
 def ver_historico_de_compras(historico):
     sys("cls")
 

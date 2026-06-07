@@ -7,7 +7,10 @@ import time, getpass, random
 from os import system as sys
 
 
-# Funções menus
+
+# ----------------------------------------------------
+#                    Funções menus
+# ----------------------------------------------------
 
 def menu_login(lista_usuarios): # Retorna o objeto se condizer com o login e senha, retorna None se não condizer
     login_input = input("Usuário: ").strip()
@@ -27,7 +30,7 @@ def menu_login(lista_usuarios): # Retorna o objeto se condizer com o login e sen
     return None
 
 
-# ----------------------------------------------------
+# --------------------- ADMIN -------------------------
 def menu_admin():
     while True:
         sys("cls")
@@ -104,7 +107,8 @@ def gestao_produtos():
             input("Continuar...")
 
 
-# ----------------------------------------------------
+
+# ------------------- FUNCIONÁRIO ---------------------
 def menu_funcionario():
     while True:
         sys("cls")
@@ -167,7 +171,7 @@ def cliente_entrando_na_fila(fila,lista_produtos):
         prioridade = random.randint(0,1)
         compras = []
         indices_produtos = []
-        for i in range(len(lista_produtos)):
+        for _ in range(len(lista_produtos)):
             indice = random.randint(0,len(lista_produtos)-1)
             if indice not in indices_produtos:
                 indices_produtos.append(indice)
@@ -198,24 +202,34 @@ def ordenar_lista_por_prioridade(fila):
     return fila
 
 
-# Dados do json para o programa
+
+
+
+# ----------------------------------------------------
+#            Dados do json para o programa
+# ----------------------------------------------------
 dados = ler_json("json_sistema/dados.json")
 
 
 lista_usuarios = []
+lista_produtos = []
+fila = []
+historico_de_compras = []
+
+
 for usuario in dados['usuarios']:
     lista_usuarios.append(Usuario(usuario['login'], usuario['senha'], usuario['role'], usuario['cpf'], usuario['nome']))
 
 
-lista_produtos = []
 for produto in dados['produtos']:
     lista_produtos.append(Produto(produto['nome'], produto['preco']))
 
-fila = []
 
-historico_de_compras = []
 
-# Programa rodando
+
+# ----------------------------------------------------
+#                  Programa rodando
+# ----------------------------------------------------
 while True:
     sys("cls")
     print("-" * 35)

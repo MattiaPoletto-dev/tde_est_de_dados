@@ -3,15 +3,15 @@ import json
 def ler_json(caminho_arquivo):
     with open(caminho_arquivo, "r", encoding='utf-8') as arquivo:
         return json.load(arquivo)
-    
-    
+
+
+
 def salvar_produto_no_json(caminho_arquivo, produto):
     dados = ler_json(caminho_arquivo)
     dados['produtos'].append(produto)
 
     with open(caminho_arquivo, "w", encoding='utf-8') as arquivo:
         json.dump(dados, arquivo, indent=4, ensure_ascii=False)
-
 
 def atualizar_produto_no_json(caminho_arquivo, id_atualizar, novo_nome, novo_preco):
     dados = ler_json(caminho_arquivo)
@@ -25,7 +25,6 @@ def atualizar_produto_no_json(caminho_arquivo, id_atualizar, novo_nome, novo_pre
     with open(caminho_arquivo, "w", encoding='utf-8') as arquivo:
         json.dump(dados, arquivo, indent=4, ensure_ascii=False)
 
-
 def excluir_produto_do_json(caminho_arquivo, id_remover):
     dados = ler_json(caminho_arquivo)
     
@@ -36,6 +35,8 @@ def excluir_produto_do_json(caminho_arquivo, id_remover):
 
     with open(caminho_arquivo, "w", encoding='utf-8') as arquivo:
         json.dump(dados, arquivo, indent=4, ensure_ascii=False)
+
+
 
 def salvar_funcionario_no_json(caminho_arquivo, funcionario):
     dados = ler_json(caminho_arquivo)
@@ -59,6 +60,7 @@ def atualizar_funcionario_no_json(caminho_arquivo, id_atualizar, novo_login, nov
         json.dump(dados, arquivo, indent=4, ensure_ascii=False)
 
 def excluir_produto_do_json(caminho_arquivo, id_remover):
+
     dados = ler_json(caminho_arquivo)
     
     for i, produto in enumerate(dados['usuarios']):

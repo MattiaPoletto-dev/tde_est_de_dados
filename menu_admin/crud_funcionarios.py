@@ -13,11 +13,11 @@ def criar_funcionario(lista_usuarios):
     while True:
         try:
             cpf_funcionario = int(input("CPF do funcionário [somente números]: "))
-            if len(str(cpf_funcionario)) != 11:
+            if len(str(cpf_funcionario)) != 11 or cpf_funcionario in [usuario.cpf for usuario in lista_usuarios]:
                 raise ValueError
             break
         except ValueError:
-            print("\nDigite um número válido!")
+            print("\nCPF inválido ou já existe!")
             print('-' * 35)
             input("Continuar...")
             sys("cls")
@@ -86,14 +86,18 @@ def atualizar_funcionario(lista_usuarios):
         print("-" * 35)
         print(f"{'Atualizando funcionário': ^35}\n")
         try:
-            id_atualizar = int(input("Qual o ID do funcionário que deseja atualizar? "))
-            if id_atualizar < 2:
+            id_atualizar = int(input("Qual o ID do funcionário que deseja atualizar [0 para voltar]? "))
+            if id_atualizar < 2 and id_atualizar != 0:
                 raise ValueError
             break
         except ValueError:
             print("\nERRO! Escolha um número inteiro válido")
             print("-" * 35)
             input("Continuar...")
+
+    if id_atualizar == 0:
+        return
+
 
     achou = False
     esquerda = 0
@@ -167,14 +171,18 @@ def remover_funcionario(lista_usuarios):
         print("-" * 35)
         print(f"{'Excluindo funcionpario': ^35}\n")
         try:
-            id_remover = int(input("Qual o ID do funcionário que deseja remover? "))
-            if id_remover < 2:
+            id_remover = int(input("Qual o ID do funcionário que deseja remover [0 para voltar]? "))
+            if id_remover < 2 and id_remover != 0:
                 raise ValueError
             break
         except ValueError:
             print("\nERRO! Escolha um número inteiro válido")
             print("-" * 35)
             input("Continuar...")
+
+    if id_remover == 0:
+        return
+
 
     achou = False
     esquerda = 0
