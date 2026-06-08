@@ -19,3 +19,11 @@ class Produto:
         Produto.contador_id += 1
         self.nome  = nome
         self.preco = preco
+
+
+class No:
+    def __init__(self, usuario):
+        self.usuario = usuario
+        self.esq = None
+        self.dir = None
+        self.altura = 1

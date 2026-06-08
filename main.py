@@ -1,10 +1,11 @@
 from menu_admin.crud_funcionarios import criar_funcionario, ver_funcionario, atualizar_funcionario, remover_funcionario
+from menu_admin.crud_funcionarios import inserir
 from menu_admin.crud_produtos import criar_produto, atualizar_produto, remover_produto
 from menu_funcionario.area_funcionario import ver_fila, chamar_proximo_da_fila, ver_historico_de_compras, cancelar_ultima_compra,ver_produtos, ver_produto_especifico
 from json_sistema.funcoes_json import ler_json
-from classes.classes import Usuario, Produto
-import time, getpass, random
-from os import system as sys
+from classes.classes import Usuario, Produto, No
+import time, getpass, random, sys
+from os import system
 
 
 
@@ -33,7 +34,7 @@ def menu_login(lista_usuarios): # Retorna o objeto se condizer com o login e sen
 # --------------------- ADMIN -------------------------
 def menu_admin():
     while True:
-        sys("cls")
+        system("cls")
         print("-" * 35)
         print(f"{'Painel administrador': ^35}\n")
         print("1. Gestão de funcionários")
@@ -55,8 +56,10 @@ def menu_admin():
             input("Continuar...")
 
 def gestao_funcionarios():
+    global raiz
+
     while True:
-        sys("cls")
+        system("cls")
         print("-" * 35)
         print(f"{'Gestão de funcionários': ^35}\n")
         print("1. Criar funcionário")
@@ -68,13 +71,13 @@ def gestao_funcionarios():
         if escolha == "0":
             break
         elif escolha == "1":
-            criar_funcionario(lista_usuarios)
+            raiz = criar_funcionario(raiz)
         elif escolha == "2":
-            ver_funcionario(lista_usuarios)
+            ver_funcionario(raiz)
         elif escolha == "3":
-            atualizar_funcionario(lista_usuarios)
+            raiz = atualizar_funcionario(raiz)
         elif escolha == "4":
-            remover_funcionario(lista_usuarios)
+            raiz = remover_funcionario(raiz)
         else:
             print("\nERRO! Escolha inválida")
             print("-" * 35)
@@ -82,7 +85,7 @@ def gestao_funcionarios():
 
 def gestao_produtos():
     while True:
-        sys("cls")
+        system("cls")
         print("-" * 35)
         print(f"{'Gestão de produtos': ^35}\n")
         print("1. Criar produto")
@@ -111,7 +114,7 @@ def gestao_produtos():
 # ------------------- FUNCIONÁRIO ---------------------
 def menu_funcionario():
     while True:
-        sys("cls")
+        system("cls")
         print("-" * 35)
 
         if not fila:
@@ -217,8 +220,14 @@ fila = []
 historico_de_compras = []
 
 
-for usuario in dados['usuarios']:
-    lista_usuarios.append(Usuario(usuario['login'], usuario['senha'], usuario['role'], usuario['cpf'], usuario['nome']))
+
+raiz = None
+for user in dados['usuarios']:
+    usuario = Usuario(user['login'], user['senha'], user['role'], user['cpf'], user['nome'])
+
+    lista_usuarios.append(usuario)
+
+    raiz = inserir(raiz, usuario)
 
 
 for produto in dados['produtos']:
@@ -227,11 +236,12 @@ for produto in dados['produtos']:
 
 
 
+
 # ----------------------------------------------------
 #                  Programa rodando
 # ----------------------------------------------------
 while True:
-    sys("cls")
+    system("cls")
     print("-" * 35)
     print(f"{'Login sistema': ^35}\n")
     usuario_autenticado = menu_login(lista_usuarios)

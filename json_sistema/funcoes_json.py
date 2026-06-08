@@ -59,7 +59,7 @@ def atualizar_funcionario_no_json(caminho_arquivo, id_atualizar, novo_login, nov
     with open(caminho_arquivo, "w", encoding='utf-8') as arquivo:
         json.dump(dados, arquivo, indent=4, ensure_ascii=False)
 
-def excluir_produto_do_json(caminho_arquivo, id_remover):
+def excluir_funcionario_do_json(caminho_arquivo, id_remover):
 
     dados = ler_json(caminho_arquivo)
     

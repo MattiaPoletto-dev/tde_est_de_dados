@@ -1,9 +1,217 @@
 from os import system as sys
-from json_sistema.funcoes_json import salvar_funcionario_no_json, atualizar_funcionario_no_json, excluir_produto_do_json
-from classes.classes import Usuario
-import time
+from json_sistema.funcoes_json import salvar_funcionario_no_json, atualizar_funcionario_no_json, excluir_funcionario_do_json
+from classes.classes import Usuario, No
 
-def criar_funcionario(lista_usuarios):
+
+def altura(no):
+    if no is None:
+        return 0
+
+    return no.altura
+
+def fator_balanceamento(no):
+
+    if no is None:
+        return 0
+
+    return altura(no.esq) - altura(no.dir)
+
+def rotacao_direita(y):
+
+    x = y.esq
+    t2 = x.dir
+
+    # Rotação
+    x.dir = y
+    y.esq = t2
+
+    # Atualiza alturas
+    y.altura = 1 + max(
+        altura(y.esq),
+        altura(y.dir)
+    )
+
+    x.altura = 1 + max(
+        altura(x.esq),
+        altura(x.dir)
+    )
+
+    return x
+
+def rotacao_esquerda(x):
+
+    y = x.dir
+    t2 = y.esq
+
+    y.esq = x
+    x.dir = t2
+
+    x.altura = 1 + max(
+        altura(x.esq),
+        altura(x.dir)
+    )
+
+    y.altura = 1 + max(
+        altura(y.esq),
+        altura(y.dir)
+    )
+
+    return y
+
+def menor_no(no):
+
+    atual = no
+
+    while atual.esq is not None:
+        atual = atual.esq
+
+    return atual
+
+def inserir(raiz, usuario):
+
+    if raiz is None:
+        return No(usuario)
+
+    if usuario.cpf < raiz.usuario.cpf:
+        raiz.esq = inserir(raiz.esq, usuario)
+
+    elif usuario.cpf > raiz.usuario.cpf:
+        raiz.dir = inserir(raiz.dir, usuario)
+
+    else:
+        return raiz
+
+    # Atualiza altura
+    raiz.altura = 1 + max(
+        altura(raiz.esq),
+        altura(raiz.dir)
+    )
+
+    fb = fator_balanceamento(raiz)
+
+    # Caso LL
+    if fb > 1 and usuario.cpf < raiz.esq.usuario.cpf:
+        return rotacao_direita(raiz)
+    
+    # Caso RR
+    if fb < -1 and usuario.cpf > raiz.dir.usuario.cpf:
+        return rotacao_esquerda(raiz)
+    
+    # LR
+    if fb > 1 and usuario.cpf > raiz.esq.usuario.cpf:
+        raiz.esq = rotacao_esquerda(raiz.esq)
+        return rotacao_direita(raiz)
+
+    # RL
+    if fb < -1 and usuario.cpf < raiz.dir.usuario.cpf:
+        raiz.dir = rotacao_direita(raiz.dir)
+        return rotacao_esquerda(raiz)
+
+    return raiz
+
+def buscar(raiz, cpf):
+
+    if raiz is None:
+        return None
+    
+    if cpf == raiz.usuario.cpf:
+        return raiz.usuario
+    
+    if cpf < raiz.usuario.cpf:
+        return buscar(raiz.esq, cpf)
+    
+    return buscar(raiz.dir, cpf)
+
+def remover(raiz, cpf):
+
+    if raiz is None:
+        return raiz
+
+    # Procurar o nó
+
+    if cpf < raiz.usuario.cpf:
+        raiz.esq = remover(raiz.esq, cpf)
+
+    elif cpf > raiz.usuario.cpf:
+        raiz.dir = remover(raiz.dir, cpf)
+
+    else:
+
+        # Sem filho esquerdo
+        if raiz.esq is None:
+            return raiz.dir
+
+        # Sem filho direito
+        if raiz.dir is None:
+            return raiz.esq
+
+        # Dois filhos
+        temp = menor_no(raiz.dir)
+
+        raiz.usuario = temp.usuario
+
+        raiz.dir = remover(
+            raiz.dir,
+            temp.usuario.cpf
+        )
+
+    # Caso a árvore tenha ficado vazia
+    if raiz is None:
+        return raiz
+
+    # Atualiza altura
+    raiz.altura = 1 + max(
+        altura(raiz.esq),
+        altura(raiz.dir)
+    )
+
+    fb = fator_balanceamento(raiz)
+
+    # LL
+    if fb > 1 and fator_balanceamento(raiz.esq) >= 0:
+        return rotacao_direita(raiz)
+
+    # LR
+    if fb > 1 and fator_balanceamento(raiz.esq) < 0:
+        raiz.esq = rotacao_esquerda(raiz.esq)
+        return rotacao_direita(raiz)
+
+    # RR
+    if fb < -1 and fator_balanceamento(raiz.dir) <= 0:
+        return rotacao_esquerda(raiz)
+
+    # RL
+    if fb < -1 and fator_balanceamento(raiz.dir) > 0:
+        raiz.dir = rotacao_direita(raiz.dir)
+        return rotacao_esquerda(raiz)
+
+    return raiz
+
+def mostrar_funcionarios(no):
+
+    if no is None:
+        return
+
+    mostrar_funcionarios(no.esq)
+
+    usuario = no.usuario
+
+    if usuario.role == "func":
+        print(f"id    : {usuario.id}")
+        print(f"Login : {usuario.login}")
+        print(f"Senha : {usuario.senha}")
+        print(f"CPF   : {usuario.cpf}")
+        print(f"Nome  : {usuario.nome}")
+        print("-" * 35)
+
+    mostrar_funcionarios(no.dir)
+
+
+
+
+
+
+def criar_funcionario(raiz):
     sys("cls")
     print("-" * 35)
     print(f"{'Criando funcionário': ^35}\n")
@@ -13,8 +221,13 @@ def criar_funcionario(lista_usuarios):
     while True:
         try:
             cpf_funcionario = int(input("CPF do funcionário [somente números]: "))
-            if len(str(cpf_funcionario)) != 11 or cpf_funcionario in [usuario.cpf for usuario in lista_usuarios]:
+            
+            if buscar(raiz, cpf_funcionario) != None:
                 raise ValueError
+
+            if len(str(cpf_funcionario)) != 11:
+                raise ValueError
+            
             break
         except ValueError:
             print("\nCPF inválido ou já existe!")
@@ -40,172 +253,148 @@ def criar_funcionario(lista_usuarios):
     }
     salvar_funcionario_no_json("json_sistema/dados.json", funcionario)
 
-    lista_usuarios.append(Usuario(login_funcionario, senha_funcionario, "func", cpf_funcionario, nome_funcionario))
+    raiz = inserir(raiz, Usuario(login_funcionario, senha_funcionario, "func", cpf_funcionario, nome_funcionario))
 
 
     print("\nFuncionário criado!")
     print("-" * 35)
     input("Continuar...")
-
-def ver_funcionario(lista_usuarios):
-    if len(lista_usuarios) <= 1:
-        sys("Cls")
-        print("-" * 44)
-        print("\nNão há funcionários cadastrados!\n")
-        print("-" * 44)
-        input("Continuar...")
-        return None
-
-    sys("cls")
-    print("*" * 45)
-    for usuario in lista_usuarios:
-        if usuario.role == "func":
-            print(f"id    : {usuario.id}"   )
-            print(f"Login : {usuario.login}")
-            print(f"Senha : {usuario.senha}")
-            print(f"CPF   : {usuario.cpf}"  )
-            print(F"Nome  : {usuario.nome}" )
-            if usuario != lista_usuarios[-1]:
-                print("-" * 35)
-            time.sleep(0.25)
-
-    print("*" * 45)
-    input("Continuar...")
-
-def atualizar_funcionario(lista_usuarios):
-    if len(lista_usuarios) <= 1:
-        sys("cls")
-        print("-" * 44)
-        print("\nNão há funcionários cadastrados!\n")
-        print("-" * 44)
-        input("Continuar...")
-        return None
-
-    while True:
-        sys("cls")
-        print("-" * 35)
-        print(f"{'Atualizando funcionário': ^35}\n")
-        try:
-            id_atualizar = int(input("Qual o ID do funcionário que deseja atualizar [0 para voltar]? "))
-            if id_atualizar < 2 and id_atualizar != 0:
-                raise ValueError
-            break
-        except ValueError:
-            print("\nERRO! Escolha um número inteiro válido")
-            print("-" * 35)
-            input("Continuar...")
-
-    if id_atualizar == 0:
-        return
-
-
-    achou = False
-    esquerda = 0
-    direita  = len(lista_usuarios) - 1
-    while esquerda <= direita:
-        ponteiro = (esquerda + direita) // 2
-        if id_atualizar == lista_usuarios[ponteiro].id:
-            achou = True
-            break
-        elif id_atualizar > lista_usuarios[ponteiro].id:
-            esquerda = ponteiro + 1
-        else:
-            direita = ponteiro - 1
-
-    if not achou:
-        print("\nID não encontrado!")
-        print('-' * 35)
-        input("Continuar...")
-        return None
     
-    print("-" * 35)
-    print(f"Atualizando o funcionário: {lista_usuarios[ponteiro].nome}\n")
+    return raiz
 
-    novo_login = input("Novo login do usuário: ")
-    nova_senha = input("Nova senha do funcionário: ")
+def ver_funcionario(raiz):
 
-    novo_cpf = 0
-    while True:
-        try:
-            novo_cpf = int(input("Novo CPF do funcionário: "))
-            if len(str(novo_cpf)) != 11 or novo_cpf < 0:
-                raise ValueError
-            break
-        except ValueError:
-            print("\nDigite um valor válido!")
-            print('-' * 35)
-            input("Continuar...")
-            sys("cls")
-            print("-" * 35)
-            print(f"{'Atualizando funcionário': ^35}\n")
-            print(f"Qual o ID do funcionário que deseja atualizar? {id_atualizar}")
-            print("-" * 35)
-            print(f"Atualizando o funcionário: {lista_usuarios[ponteiro].nome}\n")
-            print(f"Novo login do usuário: {novo_login}")
-            print(f"Nova senha do funcionário: {nova_senha}")
-    
-    novo_nome = input("Novo nome do funcionário: ")
-
-    lista_usuarios[ponteiro].login = novo_login
-    lista_usuarios[ponteiro].senha = nova_senha
-    lista_usuarios[ponteiro].cpf   = novo_cpf
-    lista_usuarios[ponteiro].nome  = novo_nome
-
-    atualizar_funcionario_no_json("json_sistema/dados.json", id_atualizar, novo_login, nova_senha, novo_cpf, novo_nome)
-
-    print("\nFuncionário atualizado!")
-    print("-" * 35)
-    input("Continuar...")
-
-def remover_funcionario(lista_usuarios):
-    if len(lista_usuarios) <= 1:
+    if raiz is None:
         sys("cls")
         print("-" * 44)
         print("\nNão há usuários cadastrados!\n")
         print("-" * 44)
         input("Continuar...")
-        return None
+        return
+
+    sys("cls")
+    print("*" * 45)
+
+    mostrar_funcionarios(raiz)
+
+    print("*" * 45)
+    input("Continuar...")
+
+def atualizar_funcionario(raiz):
+
+    if raiz is None:
+        print("Não há funcionários cadastrados!")
+        input("Continuar...")
+        return raiz
+
+    cpf_atualizar = int(input(
+        "CPF do funcionário que deseja atualizar [0 para voltar]: "
+    ))
+
+    if cpf_atualizar == 0:
+        return raiz
+
+    usuario = buscar(raiz, cpf_atualizar)
+
+    if usuario is None:
+        print("CPF não encontrado!")
+        input("Continuar...")
+        return raiz
+
+    print(f"\nAtualizando: {usuario.nome}")
+
+    novo_login = input("Novo login: ")
+    nova_senha = input("Nova senha: ")
+
+    while True:
+        try:
+            novo_cpf = int(input("Novo CPF: "))
+
+            if len(str(novo_cpf)) != 11:
+                raise ValueError
+
+            if novo_cpf != usuario.cpf and buscar(raiz, novo_cpf):
+                raise ValueError
+
+            break
+
+        except ValueError:
+            print("CPF inválido ou já cadastrado!")
+
+    novo_nome = input("Novo nome: ")
+
+    cpf_antigo = usuario.cpf
+
+    raiz = remover(raiz, cpf_antigo)
+
+    usuario.login = novo_login
+    usuario.senha = nova_senha
+    usuario.cpf   = novo_cpf
+    usuario.nome  = novo_nome
+
+    raiz = inserir(raiz, usuario)
+
+    atualizar_funcionario_no_json(
+        "json_sistema/dados.json",
+        usuario.id,
+        novo_login,
+        nova_senha,
+        novo_cpf,
+        novo_nome
+    )
+
+    print("\nFuncionário atualizado!")
+    input("Continuar...")
+
+    return raiz
+
+def remover_funcionario(raiz):
+
+    if raiz is None:
+        sys("cls")
+        print("-" * 44)
+        print("\nNão há usuários cadastrados!\n")
+        print("-" * 44)
+        input("Continuar...")
+        return raiz
 
     while True:
         sys("cls")
         print("-" * 35)
-        print(f"{'Excluindo funcionpario': ^35}\n")
+        print(f"{'Excluindo funcionário': ^35}\n")
+
         try:
-            id_remover = int(input("Qual o ID do funcionário que deseja remover [0 para voltar]? "))
-            if id_remover < 2 and id_remover != 0:
-                raise ValueError
+            cpf_remover = int(
+                input("Qual o CPF do funcionário que deseja remover [0 para voltar]? ")
+            )
+
+            if cpf_remover == 0:
+                return raiz
+
             break
+
         except ValueError:
-            print("\nERRO! Escolha um número inteiro válido")
+            print("\nERRO! Digite um CPF válido")
             print("-" * 35)
             input("Continuar...")
 
-    if id_remover == 0:
-        return
+    usuario = buscar(raiz, cpf_remover)
 
-
-    achou = False
-    esquerda = 0
-    direita  = len(lista_usuarios) - 1
-    while esquerda <= direita:
-        ponteiro = (esquerda + direita) // 2
-        if id_remover == lista_usuarios[ponteiro].id:
-            achou = True
-            break
-        elif id_remover > lista_usuarios[ponteiro].id:
-            esquerda = ponteiro + 1
-        else:
-            direita = ponteiro - 1
-
-    if not achou:
-        print("\nID não encontrado!")
+    if usuario is None:
+        print("\nCPF não encontrado!")
         print("-" * 35)
         input("Continuar...")
-        return None
-    
+        return raiz
 
-    excluir_produto_do_json("json_sistema/dados.json", id_remover)
-    lista_usuarios.pop(ponteiro)
+    excluir_funcionario_do_json(
+        "json_sistema/dados.json",
+        usuario.id
+    )
+
+    raiz = remover(raiz, cpf_remover)
+
     print("\nFuncionário removido!")
     print("-" * 35)
     input("Continuar...")
+
+    return raiz

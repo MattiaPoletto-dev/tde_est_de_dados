@@ -5,8 +5,40 @@
             "login": "admin",
             "senha": "123",
             "role": "admin",
-            "cpf": null,
+            "cpf": 55555555555,
             "nome": null
+        },
+        {
+            "id": 2,
+            "login": "matylop",
+            "senha": "123",
+            "role": "func",
+            "cpf": 11122211122,
+            "nome": "Mattia Poletto"
+        },
+        {
+            "id": 3,
+            "login": "joão",
+            "senha": "123",
+            "role": "func",
+            "cpf": 99999999999,
+            "nome": "João Gomes"
+        },
+        {
+            "id": 4,
+            "login": "Maria",
+            "senha": "123",
+            "role": "func",
+            "cpf": 77777777777,
+            "nome": "Maria Clara"
+        },
+        {
+            "id": 5,
+            "login": "Pedro",
+            "senha": "123",
+            "role": "func",
+            "cpf": 33333333333,
+            "nome": "Pedro Maia"
         }
     ],
     "produtos": [
