@@ -167,20 +167,20 @@ def remover(raiz, cpf):
 
     fb = fator_balanceamento(raiz)
 
-    # LL
+    # Rotação simples à direita
     if fb > 1 and fator_balanceamento(raiz.esq) >= 0:
         return rotacao_direita(raiz)
 
-    # LR
+    # Rotação simples à esquerda
+    if fb < -1 and fator_balanceamento(raiz.dir) <= 0:
+        return rotacao_esquerda(raiz)
+
+    # Rotação dupla esquerda-direita
     if fb > 1 and fator_balanceamento(raiz.esq) < 0:
         raiz.esq = rotacao_esquerda(raiz.esq)
         return rotacao_direita(raiz)
 
-    # RR
-    if fb < -1 and fator_balanceamento(raiz.dir) <= 0:
-        return rotacao_esquerda(raiz)
-
-    # RL
+    # Rotação dupla direita-esquerda
     if fb < -1 and fator_balanceamento(raiz.dir) > 0:
         raiz.dir = rotacao_direita(raiz.dir)
         return rotacao_esquerda(raiz)
