@@ -136,7 +136,7 @@ def menu_funcionario():
         print("1. Ver fila")
         print("2. Chamar o próximo da fila")
         print("3. Ver histórico de compras")
-        print("4. Ver histórico de compras ordenado por maior preço")
+        print("4. Ver histórico de compras ordenado por menor preço")
         print("5. Cancelar última compra")
         print("6. Ver produtos")
         print("7. Procurar produto específico")
