@@ -1,10 +1,9 @@
-from menu_admin.crud_funcionarios import criar_funcionario, ver_funcionario, atualizar_funcionario, remover_funcionario
-from menu_admin.crud_funcionarios import inserir
+from menu_admin.crud_funcionarios import criar_funcionario, ver_funcionario, atualizar_funcionario, remover_funcionario, inserir
 from menu_admin.crud_produtos import criar_produto, atualizar_produto, remover_produto
-from menu_funcionario.area_funcionario import ver_fila, chamar_proximo_da_fila, ver_historico_de_compras, cancelar_ultima_compra,ver_produtos, ver_produto_especifico
+from menu_funcionario.area_funcionario import ver_fila, chamar_proximo_da_fila, ver_historico_de_compras, ver_historico_ordenado_preco, cancelar_ultima_compra,ver_produtos, ver_produto_especifico
 from json_sistema.funcoes_json import ler_json
-from classes.classes import Usuario, Produto, No
-import time, getpass, random, sys
+from classes.classes import Usuario, Produto
+import time, getpass, random
 from os import system
 
 
@@ -73,7 +72,17 @@ def gestao_funcionarios():
         elif escolha == "1":
             raiz = criar_funcionario(raiz)
         elif escolha == "2":
-            ver_funcionario(raiz)
+            while True:
+                print()
+                print("-" * 52)
+                print("1. In order")
+                print("2. Pre order")
+                print("3. Post order")
+                forma_de_ordenacao = str(input("Escolha: "))
+                if forma_de_ordenacao in ["1", "2", "3"]:
+                    break
+            
+            ver_funcionario(raiz, forma_de_ordenacao)
         elif escolha == "3":
             raiz = atualizar_funcionario(raiz)
         elif escolha == "4":
@@ -127,9 +136,10 @@ def menu_funcionario():
         print("1. Ver fila")
         print("2. Chamar o próximo da fila")
         print("3. Ver histórico de compras")
-        print("4. Cancelar última compra")
-        print("5. Ver produtos")
-        print("6. Procurar produto específico")
+        print("4. Ver histórico de compras ordenado por maior preço")
+        print("5. Cancelar última compra")
+        print("6. Ver produtos")
+        print("7. Procurar produto específico")
         print("0. Sair")
         escolha = input("Escolha: ")
 
@@ -145,10 +155,12 @@ def menu_funcionario():
         elif escolha == "3":
             ver_historico_de_compras(historico_de_compras)
         elif escolha == "4":
-            cancelar_ultima_compra(historico_de_compras)
+            ver_historico_ordenado_preco(historico_de_compras)
         elif escolha == "5":
-            ver_produtos(lista_produtos)
+            cancelar_ultima_compra(historico_de_compras)
         elif escolha == "6":
+            ver_produtos(lista_produtos)
+        elif escolha == "7":
             indice = ver_produto_especifico(lista_produtos)
             if indice == -1:
                 print("\nProduto não encontrado!")
@@ -224,8 +236,6 @@ historico_de_compras = []
 raiz = None
 for user in dados['usuarios']:
     usuario = Usuario(user['login'], user['senha'], user['role'], user['cpf'], user['nome'])
-
-    lista_usuarios.append(usuario)
 
     raiz = inserir(raiz, usuario)
 

@@ -2,6 +2,7 @@ from os import system as sys
 from classes.classes import Produto
 from json_sistema.funcoes_json import salvar_produto_no_json, atualizar_produto_no_json, excluir_produto_do_json
 
+
 def criar_produto(lista_produtos):
     sys("cls")
     print("-" * 35)
@@ -38,7 +39,6 @@ def criar_produto(lista_produtos):
     print("\nProduto criado!")
     print("-" * 35)
     input("Continuar...")
-
 
 def atualizar_produto(lista_produtos):
 
@@ -115,7 +115,6 @@ def atualizar_produto(lista_produtos):
     print("-" * 35)
     input("Continuar...")
     
-
 def remover_produto(lista_produtos):
     if len(lista_produtos) <= 0:
         sys("cls")

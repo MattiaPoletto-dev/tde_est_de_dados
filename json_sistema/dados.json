@@ -10,18 +10,18 @@
         },
         {
             "id": 2,
-            "login": "matylop",
+            "login": "Zezin",
             "senha": "123",
             "role": "func",
-            "cpf": 11122211122,
-            "nome": "Mattia Poletto"
+            "cpf": 54234664314,
+            "nome": "Zezinho Pereira"
         },
         {
             "id": 3,
             "login": "joão",
             "senha": "123",
             "role": "func",
-            "cpf": 99999999999,
+            "cpf": 82746352123,
             "nome": "João Gomes"
         },
         {
@@ -29,7 +29,7 @@
             "login": "Maria",
             "senha": "123",
             "role": "func",
-            "cpf": 77777777777,
+            "cpf": 24323454209,
             "nome": "Maria Clara"
         },
         {
@@ -37,7 +37,7 @@
             "login": "Pedro",
             "senha": "123",
             "role": "func",
-            "cpf": 33333333333,
+            "cpf": 64232385943,
             "nome": "Pedro Maia"
         }
     ],

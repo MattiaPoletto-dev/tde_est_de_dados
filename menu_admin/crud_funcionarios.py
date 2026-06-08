@@ -89,20 +89,20 @@ def inserir(raiz, usuario):
 
     fb = fator_balanceamento(raiz)
 
-    # Caso LL
+    # Rotação simples à direita
     if fb > 1 and usuario.cpf < raiz.esq.usuario.cpf:
         return rotacao_direita(raiz)
     
-    # Caso RR
+    # Rotação simples à esquerda
     if fb < -1 and usuario.cpf > raiz.dir.usuario.cpf:
         return rotacao_esquerda(raiz)
     
-    # LR
+    # Rotação dupla esquerda-direita
     if fb > 1 and usuario.cpf > raiz.esq.usuario.cpf:
         raiz.esq = rotacao_esquerda(raiz.esq)
         return rotacao_direita(raiz)
 
-    # RL
+    # Rotação dupla direita-esquerda
     if fb < -1 and usuario.cpf < raiz.dir.usuario.cpf:
         raiz.dir = rotacao_direita(raiz.dir)
         return rotacao_esquerda(raiz)
@@ -187,12 +187,12 @@ def remover(raiz, cpf):
 
     return raiz
 
-def mostrar_funcionarios(no):
+def mostrar_funcionarios_in_order(no):
 
     if no is None:
         return
 
-    mostrar_funcionarios(no.esq)
+    mostrar_funcionarios_in_order(no.esq)
 
     usuario = no.usuario
 
@@ -204,11 +204,43 @@ def mostrar_funcionarios(no):
         print(f"Nome  : {usuario.nome}")
         print("-" * 35)
 
-    mostrar_funcionarios(no.dir)
+    mostrar_funcionarios_in_order(no.dir)
 
+def mostrar_funcionarios_pre_order(no):
 
+    if no is None:
+        return
 
+    usuario = no.usuario
 
+    if usuario.role == "func":
+        print(f"id    : {usuario.id}")
+        print(f"Login : {usuario.login}")
+        print(f"Senha : {usuario.senha}")
+        print(f"CPF   : {usuario.cpf}")
+        print(f"Nome  : {usuario.nome}")
+        print("-" * 35)
+
+    mostrar_funcionarios_pre_order(no.esq)
+    mostrar_funcionarios_pre_order(no.dir)
+
+def mostrar_funcionarios_post_order(no):
+
+    if no is None:
+        return
+
+    mostrar_funcionarios_post_order(no.esq)
+    mostrar_funcionarios_post_order(no.dir)
+
+    usuario = no.usuario
+
+    if usuario.role == "func":
+        print(f"id    : {usuario.id}")
+        print(f"Login : {usuario.login}")
+        print(f"Senha : {usuario.senha}")
+        print(f"CPF   : {usuario.cpf}")
+        print(f"Nome  : {usuario.nome}")
+        print("-" * 35)
 
 
 def criar_funcionario(raiz):
@@ -262,7 +294,7 @@ def criar_funcionario(raiz):
     
     return raiz
 
-def ver_funcionario(raiz):
+def ver_funcionario(raiz, forma_de_ordenacao):
 
     if raiz is None:
         sys("cls")
@@ -274,8 +306,12 @@ def ver_funcionario(raiz):
 
     sys("cls")
     print("*" * 45)
-
-    mostrar_funcionarios(raiz)
+    if forma_de_ordenacao == "1":
+        mostrar_funcionarios_in_order(raiz)
+    elif forma_de_ordenacao == "2":
+        mostrar_funcionarios_pre_order(raiz)
+    else:
+        mostrar_funcionarios_post_order(raiz)
 
     print("*" * 45)
     input("Continuar...")
@@ -349,6 +385,7 @@ def atualizar_funcionario(raiz):
     return raiz
 
 def remover_funcionario(raiz):
+
 
     if raiz is None:
         sys("cls")

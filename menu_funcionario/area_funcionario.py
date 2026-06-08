@@ -59,6 +59,66 @@ def ver_historico_de_compras(historico):
     print("-" * 44)
     input("Continuar...")
 
+def merge_sort_historico(historico):
+
+    if len(historico) <= 1:
+        return historico
+
+    meio = len(historico) // 2
+
+    esquerda = merge_sort_historico(historico[:meio])
+    direita = merge_sort_historico(historico[meio:])
+
+    return merge(esquerda, direita)
+
+def merge(esq, dir):
+
+    resultado = []
+    i = j = 0
+
+    while i < len(esq) and j < len(dir):
+
+        if esq[i][1] <= dir[j][1]:  # <-- TOTAL DA COMPRA
+            resultado.append(esq[i])
+            i += 1
+        else:
+            resultado.append(dir[j])
+            j += 1
+
+    resultado.extend(esq[i:])
+    resultado.extend(dir[j:])
+
+    return resultado
+
+def ver_historico_ordenado_preco(historico):
+
+    sys("cls")
+
+    if not historico:
+        print("-" * 44)
+        print("O histórico está vazio!\n")
+        input("Continuar...")
+        return
+
+    ordenado = merge_sort_historico(historico)
+
+    print("Histórico ordenado por preço:\n")
+    print("-" * 44)
+
+    for i in range(len(ordenado)):
+        compras, total = ordenado[i]
+
+        print(f"Compra {i+1}\n")
+
+        for produto, quantidade in compras:
+            print(f"Produto   : {produto.nome}")
+            print(f"Quantidade: {quantidade}")
+
+        print(f"\nTotal: R$ {total:.2f}")
+        print("-" * 35)
+
+    input("Continuar...")
+
 def cancelar_ultima_compra(historico):
     sys("cls")
 
