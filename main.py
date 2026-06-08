@@ -237,6 +237,8 @@ raiz = None
 for user in dados['usuarios']:
     usuario = Usuario(user['login'], user['senha'], user['role'], user['cpf'], user['nome'])
 
+    lista_usuarios.append(usuario)
+    
     raiz = inserir(raiz, usuario)
 
 
